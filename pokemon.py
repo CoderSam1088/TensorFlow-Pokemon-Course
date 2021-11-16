@@ -12,6 +12,22 @@ def dummy_creation(df, dummy_categories):
         df = df.drop(i, axis=1)
     return(df)
 
+def train_test_splitter(DataFrame, column):
+    df_train = DataFrame.loc[df[column] != 1]
+    df_test = DataFrame.loc[df[column] == 1]
+
+    df_train = df_train.drop(column, axis=1)
+    df_test = df_test.drop(column, axis=1)
+
+    return(df_train, df_test)
+
+def label_delineator(df_train, df_test, label):
+    train_data = df_train.drop(label, axis=1).values
+    train_labels = df_Train[label].values
+    test_data = df_test.drop(label,axis=1).values
+    test_labels = df_test[label].values
+    return(train_data, train_labels, test_data, test_labels)
+
 df = pd.read_csv('pokemon_alopez247.csv')
 
 df = df[['isLegendary','Generation', 'Type_1', 'Type_2', 'HP', 'Attack', 'Defense', 'Sp_Atk', 'Sp_Def', 'Speed','Color','Egg_Group_1','Height_m','Weight_kg','Body_Style']]
@@ -19,3 +35,7 @@ df = df[['isLegendary','Generation', 'Type_1', 'Type_2', 'HP', 'Attack', 'Defens
 df['isLegendary'] = df['isLegendary'].astype(int)
 
 df = dummy_creation(df, ['Egg_Group_1', 'Body_Style', 'Color', 'Type_1', 'Type_2'])
+
+df_train, df_test = train_test_splitter(df, 'Generation')
+
+train_data, train_labels, test_data, test_labels = label_delineator(df_train, df_test, 'isLegendary')
